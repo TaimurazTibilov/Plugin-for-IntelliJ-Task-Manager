@@ -1,0 +1,27 @@
+<idea-plugin>
+    <id>org.taimuraztibilov.task_manager</id>
+    <name>Task monitoring manager</name>
+    <vendor email="taimuraztibilov@yandex.ru" url="https://github.com/TaimurazTibilov">Taimuraz Tibilov</vendor>
+
+    <description><![CDATA[
+    <h2 class="code-line" data-line-start=0 data-line-end=1 >
+        <a id="Task_Monitoring_Manager_Plugin_0"></a>
+        Task Monitoring Manager Plugin
+    </h2>
+    <p class="has-line-data" data-line-start="1" data-line-end="2">
+        Plugin helps to manage your tasks on GitLab repository and create report about closed issues.
+    </p>
+    ]]></description>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>
