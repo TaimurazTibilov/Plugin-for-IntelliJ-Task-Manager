@@ -3,10 +3,9 @@ package org.taimuraztibilov.taskmanager;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import org.sqlite.*;
 
@@ -21,11 +20,15 @@ public class DataBaseManager {
         this.connection = DriverManager.getConnection("jdbc:sqlite:" + this.connectionPath);
         connection.createStatement().executeUpdate("pragma foreign_keys = on");
         createProjectTable();
+        createMilestoneTable();
+        createTaskTable();
+        createKeyPointTable();
+        createLabelTable();
     }
 
     public static synchronized DataBaseManager getInstance() throws SQLException {
         if (instance == null)
-            instance = new DataBaseManager("plugin.sqlite");
+            instance = new DataBaseManager("taskmanager.sqlite");
         return instance;
     }
 
@@ -106,5 +109,67 @@ public class DataBaseManager {
                 "task_id integer not null," +
                 "foreign key (label_id) references label(id)," +
                 "foreign key (task_id) references task(id))");
+    }
+
+    public void addProject(String title, String description, int state) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("insert into " +
+                "project (title, description, state) values (?, ?, ?)");
+        statement.setObject(1, title);
+        statement.setObject(2, description);
+        statement.setObject(3, state);
+        statement.executeUpdate();
+    }
+
+    public void deleteProject(int id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("delete from project where id = ?");
+        statement.setObject(1, id);
+        statement.executeUpdate();
+    }
+
+    public ProjectModel getProject(int id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("select * from project where id = ?");
+        statement.setObject(1, id);
+        ResultSet result = statement.executeQuery();
+        return new ProjectModel(
+                result.getInt("id"),
+                result.getString("title"),
+                result.getString("description"),
+                result.getInt("state"));
+    }
+
+    public ArrayList<ProjectModel> getProjects() throws SQLException {
+        ArrayList<ProjectModel> projects = new ArrayList<>();
+        Statement statement = connection.createStatement();
+        ResultSet result = statement.executeQuery("select * from project");
+        while (result.next())
+            projects.add(new ProjectModel(
+                    result.getInt("id"),
+                    result.getString("title"),
+                    result.getString("description"),
+                    result.getInt("state")));
+
+        return projects;
+    }
+
+    public void editProject(ProjectModel edited) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("update project set title = ?," +
+                "description = ?, state = ? where id = ?");
+        statement.setObject(1, edited.getTitle());
+        statement.setObject(2, edited.getDescription());
+        statement.setObject(3, edited.getState());
+        statement.setObject(4, edited.getId());
+        statement.executeUpdate();
+    }
+
+    public void addMilestone(int projectId, String title, String description, LocalDateTime deadline, int state)
+            throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("insert into milestone " +
+                "(project_id, title, description, deadline, state) values (?, ?, ?, ?, ?)");
+        statement.setObject(1, projectId);
+        statement.setObject(2, title);
+        statement.setObject(3, description);
+        statement.setObject(4, deadline.toString());
+        statement.setObject(5, state);
+        statement.executeUpdate();
     }
 }

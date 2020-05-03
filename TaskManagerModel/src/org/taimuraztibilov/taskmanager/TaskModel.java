@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class TaskModel {
-    private int id;
-    private int milestoneId;
+    private final int id;
+    private final int milestoneId;
     private String title;
     private String description;
     private LocalDateTime createdOn;
@@ -24,6 +24,70 @@ public class TaskModel {
         this.deadline = deadline;
         this.timeEstimated = timeEstimated;
         this.timeSpent = timeSpent;
+        this.state = state;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getMilestoneId() {
+        return milestoneId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public LocalDateTime getCreatedOn() {
+        return createdOn;
+    }
+
+    public LocalDateTime getDeadline() {
+        return deadline;
+    }
+
+    public LocalTime getTimeEstimated() {
+        return timeEstimated;
+    }
+
+    public LocalTime getTimeSpent() {
+        return timeSpent;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCreatedOn(LocalDateTime createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public void setDeadline(LocalDateTime deadline) {
+        this.deadline = deadline;
+    }
+
+    public void setTimeEstimated(LocalTime timeEstimated) {
+        this.timeEstimated = timeEstimated;
+    }
+
+    public void setTimeSpent(LocalTime timeSpent) {
+        this.timeSpent = timeSpent;
+    }
+
+    public void setState(int state) {
         this.state = state;
     }
 }

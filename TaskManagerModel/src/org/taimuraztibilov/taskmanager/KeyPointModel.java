@@ -3,8 +3,8 @@ package org.taimuraztibilov.taskmanager;
 import java.time.LocalTime;
 
 public class KeyPointModel {
-    private int id;
-    private int taskId;
+    private final int id;
+    private final int taskId;
     private String title;
     private String solution;
     private LocalTime timeEstimated;
@@ -19,6 +19,54 @@ public class KeyPointModel {
         this.solution = solution;
         this.timeEstimated = timeEstimated;
         this.timeSpent = timeSpent;
+        this.state = state;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getTaskId() {
+        return taskId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getSolution() {
+        return solution;
+    }
+
+    public LocalTime getTimeEstimated() {
+        return timeEstimated;
+    }
+
+    public LocalTime getTimeSpent() {
+        return timeSpent;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setSolution(String solution) {
+        this.solution = solution;
+    }
+
+    public void setTimeEstimated(LocalTime timeEstimated) {
+        this.timeEstimated = timeEstimated;
+    }
+
+    public void setTimeSpent(LocalTime timeSpent) {
+        this.timeSpent = timeSpent;
+    }
+
+    public void setState(int state) {
         this.state = state;
     }
 }
