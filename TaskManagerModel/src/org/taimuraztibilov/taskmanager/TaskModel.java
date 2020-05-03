@@ -5,7 +5,7 @@ import java.time.LocalTime;
 
 public class TaskModel {
     private final int id;
-    private final int milestoneId;
+    private int milestoneId;
     private String title;
     private String description;
     private LocalDateTime createdOn;
@@ -61,6 +61,10 @@ public class TaskModel {
 
     public int getState() {
         return state;
+    }
+
+    public void setMilestoneId(int milestoneId) {
+        this.milestoneId = milestoneId;
     }
 
     public void setTitle(String title) {

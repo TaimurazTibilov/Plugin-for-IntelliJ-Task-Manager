@@ -1,15 +1,17 @@
 package org.taimuraztibilov.taskmanager;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
-import org.sqlite.*;
+import org.sqlite.*; // TODO: 03.05.2020 make all methods synchronized
 
-public class DataBaseManager {
+public class DataBaseManager implements DataEditor {
     private static DataBaseManager instance;
     private String connectionPath;
     private Connection connection;
@@ -134,7 +136,7 @@ public class DataBaseManager {
                 result.getInt("id"),
                 result.getString("title"),
                 result.getString("description"),
-                result.getInt("state"));
+                result.getInt("state")).setListenerOnEdit(this);
     }
 
     public ArrayList<ProjectModel> getProjects() throws SQLException {
@@ -146,7 +148,7 @@ public class DataBaseManager {
                     result.getInt("id"),
                     result.getString("title"),
                     result.getString("description"),
-                    result.getInt("state")));
+                    result.getInt("state")).setListenerOnEdit(this));
 
         return projects;
     }
@@ -171,5 +173,51 @@ public class DataBaseManager {
         statement.setObject(4, deadline.toString());
         statement.setObject(5, state);
         statement.executeUpdate();
+    }
+
+    public MilestoneModel getMilestone(int id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("select * from milestone where id = ?");
+        statement.setObject(1, id);
+        ResultSet result = statement.executeQuery();
+        return new MilestoneModel(
+                result.getInt("id"),
+                result.getInt("project_id"),
+                result.getString("title"),
+                result.getString("description"),
+                LocalDateTime.parse(result.getString("deadline")),
+                result.getInt("state")).setListenerOnEdit(this);
+    }
+
+    public ArrayList<MilestoneModel> getMilestones(int projectId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("select * from milestone where project_id = ?");
+        statement.setObject(1, projectId);
+        ResultSet result = statement.executeQuery();
+        ArrayList<MilestoneModel> milestones = new ArrayList<>();
+        while (result.next()) {
+            milestones.add(new MilestoneModel(
+                    result.getInt("id"),
+                    result.getInt("project_id"),
+                    result.getString("title"),
+                    result.getString("description"),
+                    LocalDateTime.parse(result.getString("deadline")),
+                    result.getInt("state")).setListenerOnEdit(this));
+        }
+        return milestones;
+    }
+
+    public void editMilestone(MilestoneModel edited) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("update milestone set " +
+                "title = ?, description = ?, deadline = ?, state = ? where id = ?");
+        statement.setObject(1, edited.getTitle());
+        statement.setObject(2, edited.getDescription());
+        statement.setObject(3, edited.getDeadline().toString());
+        statement.setObject(4, edited.getState());
+        connection.createStatement().executeUpdate("");
+    }
+
+    public void addTask(int milestoneId, String title, String description, LocalDateTime deadline,
+                        LocalTime timeEstimated, int state) {
+        // TODO: 03.05.2020 create row of task in table
+        // select max(id) from task - получить идентификатор последней добавленной задачи
     }
 }

@@ -1,5 +1,6 @@
 package org.taimuraztibilov.taskmanager;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 public class MilestoneModel {
@@ -9,6 +10,7 @@ public class MilestoneModel {
     private String description;
     private LocalDateTime deadline;
     private int state;
+    private DataEditor listenerOnEdit;
 
     public MilestoneModel(int id, int projectId, String title, String description, LocalDateTime deadline, int state) {
         this.id = id;
@@ -43,19 +45,28 @@ public class MilestoneModel {
         return state;
     }
 
-    public void setTitle(String title) {
+    public MilestoneModel setListenerOnEdit(DataEditor listenerOnEdit) {
+        this.listenerOnEdit = listenerOnEdit;
+        return this;
+    }
+
+    public void setTitle(String title) throws SQLException {
         this.title = title;
+        listenerOnEdit.editMilestone(this);
     }
 
-    public void setDescription(String description) {
+    public void setDescription(String description) throws SQLException {
         this.description = description;
+        listenerOnEdit.editMilestone(this);
     }
 
-    public void setDeadline(LocalDateTime deadline) {
+    public void setDeadline(LocalDateTime deadline) throws SQLException {
         this.deadline = deadline;
+        listenerOnEdit.editMilestone(this);
     }
 
-    public void setState(int state) {
+    public void setState(int state) throws SQLException {
         this.state = state;
+        listenerOnEdit.editMilestone(this);
     }
 }
