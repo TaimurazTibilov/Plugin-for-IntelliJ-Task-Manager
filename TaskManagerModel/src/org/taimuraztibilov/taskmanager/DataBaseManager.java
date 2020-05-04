@@ -124,7 +124,12 @@ public class DataBaseManager implements DataEditor {
     }
 
     public synchronized void deleteProject(int id) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("delete from project where id = ?");
+        PreparedStatement statement = connection.prepareStatement("select id from milestone where project_id = ?");
+        statement.setObject(1, id);
+        ResultSet result = statement.executeQuery();
+        while (result.next())
+            deleteMilestone(result.getInt(1));
+        statement = connection.prepareStatement("delete from project where id = ?");
         statement.setObject(1, id);
         statement.executeUpdate();
     }
@@ -133,11 +138,13 @@ public class DataBaseManager implements DataEditor {
         PreparedStatement statement = connection.prepareStatement("select * from project where id = ?");
         statement.setObject(1, id);
         ResultSet result = statement.executeQuery();
-        return new Project(
+        Project project = new Project(
                 result.getInt("id"),
                 result.getString("title"),
                 result.getString("description"),
                 result.getInt("state")).setListenerOnEdit(this);
+        project.setMilestones(getMilestones(id));
+        return project;
     }
 
     public synchronized ArrayList<Project> getProjects() throws SQLException {
@@ -176,17 +183,30 @@ public class DataBaseManager implements DataEditor {
                 description, deadline, state).setListenerOnEdit(this);
     }
 
+    public synchronized void deleteMilestone(int id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("select id from task where milestone_id = ?");
+        statement.setObject(1, id);
+        ResultSet result = statement.executeQuery();
+        while (result.next())
+            deleteTask(result.getInt(1));
+        statement = connection.prepareStatement("delete from milestone where id = ?");
+        statement.setObject(1, id);
+        statement.executeUpdate();
+    }
+
     public synchronized Milestone getMilestone(int id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("select * from milestone where id = ?");
         statement.setObject(1, id);
         ResultSet result = statement.executeQuery();
-        return new Milestone(
+        Milestone milestone = new Milestone(
                 result.getInt("id"),
                 result.getInt("project_id"),
                 result.getString("title"),
                 result.getString("description"),
                 LocalDateTime.parse(result.getString("deadline")),
                 result.getInt("state")).setListenerOnEdit(this);
+        milestone.setTasks(getTasks(id));
+        return milestone;
     }
 
     public synchronized ArrayList<Milestone> getMilestones(int projectId) throws SQLException {
@@ -239,7 +259,7 @@ public class DataBaseManager implements DataEditor {
     }
 
     public synchronized ArrayList<Label> getLabels() throws SQLException {
-        ResultSet result = connection.createStatement().executeQuery("select id from task");
+        ResultSet result = connection.createStatement().executeQuery("select id from label");
         ArrayList<Label> labels = new ArrayList<>();
         while (result.next()) {
             labels.add(getLabel(result.getInt(1)));
@@ -247,12 +267,28 @@ public class DataBaseManager implements DataEditor {
         return labels;
     }
 
-    public synchronized void editLabel(Label label) throws SQLException {
+    public synchronized ArrayList<Label> getLabels(int taskId, ArrayList<Label> labels) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("select label_id from label_task " +
+                "where task_id = ?");
+        statement.setObject(1, taskId);
+        ResultSet result = statement.executeQuery();
+        ArrayList<Label> taskLabels = new ArrayList<>();
+        while (result.next()) {
+            int id = result.getInt(1);
+            labels.forEach(x -> {
+                if (id == x.getId())
+                    taskLabels.add(x);
+            });
+        }
+        return taskLabels;
+    }
+
+    public synchronized void editLabel(Label edited) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("update label " +
                 "set title = ?, color = ? where id = ?");
-        statement.setObject(1, label.getTitle());
-        statement.setObject(2, label.getColor());
-        statement.setObject(3, label.getId());
+        statement.setObject(1, edited.getTitle());
+        statement.setObject(2, edited.getColor());
+        statement.setObject(3, edited.getId());
         statement.executeUpdate();
     }
 
@@ -261,19 +297,20 @@ public class DataBaseManager implements DataEditor {
             throws SQLException {
         LocalDateTime createdOn = LocalDateTime.now();
         PreparedStatement statement = connection.prepareStatement("insert into task " +
-                "(milestone_id, title, description, created_on, deadline, time_estimated, state) " +
-                "values (?, ?, ?, ?, ?, ?, ?)");
+                "(milestone_id, title, description, created_on, deadline, time_estimated, time_spent, state) " +
+                "values (?, ?, ?, ?, ?, ?, ?, ?)");
         statement.setObject(1, milestoneId);
         statement.setObject(2, title);
         statement.setObject(3, description);
         statement.setObject(4, createdOn.toString());
         statement.setObject(5, deadline.toString());
         statement.setObject(6, timeEstimated == null ? "" : timeEstimated.toString());
-        statement.setObject(7, state);
+        statement.setObject(7, LocalTime.MIN.toString());
+        statement.setObject(8, state);
         statement.executeUpdate();
         ResultSet newId = connection.createStatement().executeQuery("select max(id) from task");
         Task newTask = new Task(newId.getInt(1), milestoneId, title, description, createdOn,
-                deadline, timeEstimated, null, state).setListenerOnEdit(this);
+                deadline, timeEstimated, LocalTime.MIN, state).setListenerOnEdit(this);
         for (Label label : labels) {
             statement = connection.prepareStatement("insert into label_task (label_id, task_id) values (?, ?)");
             statement.setObject(1, label.getId());
@@ -282,6 +319,18 @@ public class DataBaseManager implements DataEditor {
             newTask.addLabel(label);
         }
         return newTask;
+    }
+
+    public synchronized void deleteTask(int id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("delete from keypoint where task_id = ?");
+        statement.setObject(1, id);
+        statement.executeUpdate();
+        statement = connection.prepareStatement("delete from label_task where task_id = ?");
+        statement.setObject(1, id);
+        statement.executeUpdate();
+        statement = connection.prepareStatement("delete from task where id = ?");
+        statement.setObject(1, id);
+        statement.executeUpdate();
     }
 
     public synchronized Task getTask(int id) throws SQLException {
@@ -304,10 +353,11 @@ public class DataBaseManager implements DataEditor {
                 spent,
                 result.getInt("state")).setListenerOnEdit(this);
         statement = connection.prepareStatement("select label_id from label_task where task_id = ?");
+        statement.setObject(1, task.getId());
         result = statement.executeQuery();
-        while (result.next()) {
-            // TODO: 04.05.2020 Write method that adds labels to the Task
-        }
+        while (result.next())
+            task.addLabel(getLabel(result.getInt(1)));
+        task.setKeyPoints(getKeyPoints(id));
         return task;
     }
 
@@ -316,9 +366,106 @@ public class DataBaseManager implements DataEditor {
         PreparedStatement statement = connection.prepareStatement("select id from task where milestone_id = ?");
         statement.setObject(1, milestoneId);
         ResultSet result = statement.executeQuery();
-        while (result.next()) {
+        while (result.next())
             tasks.add(getTask(result.getInt("id")));
-        }
         return tasks;
+    }
+
+    public synchronized void editTask(Task edited) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("update task set milestone_id = ?, " +
+                "title = ?, description = ?, deadline = ?, time_estimated = ?, time_spent = ?, state = ? where id = ?");
+        statement.setObject(1, edited.getMilestoneId());
+        statement.setObject(2, edited.getTitle());
+        statement.setObject(3, edited.getDescription());
+        statement.setObject(4, edited.getDeadline());
+        statement.setObject(5, edited.getTimeEstimated() == null ? "" :
+                edited.getTimeEstimated().toString());
+        statement.setObject(6, edited.getTimeSpent() == null ? "" : edited.getTimeSpent().toString());
+        statement.setObject(7, edited.getState());
+        statement.setObject(8, edited.getId());
+        statement.executeUpdate();
+    }
+
+    public synchronized KeyPoint addKeyPoint(Task task, String title, String solution, LocalTime timeEstimated
+            , int state) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("insert into keypoint " +
+                "(task_id, title, solution, time_estimated, time_spent, state) values (?, ?, ?, ?, ?, ?)");
+        statement.setObject(1, task.getId());
+        statement.setObject(2, title);
+        statement.setObject(3, solution);
+        statement.setObject(4, timeEstimated == null ? "" : timeEstimated.toString());
+        statement.setObject(5, LocalTime.MIN.toString());
+        statement.setObject(6, state);
+        statement.executeUpdate();
+        ResultSet result = connection.createStatement().executeQuery("select max(id) from keypoint");
+        KeyPoint keyPoint = new KeyPoint(result.getInt(1), task.getId(), title, solution, timeEstimated,
+                LocalTime.MIN, state).setListenerOnEdit(this);
+        task.addKeyPoint(keyPoint);
+        return keyPoint;
+    }
+
+    public synchronized void deleteKeyPoint(int id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("delete from keypoint where id = ?");
+        statement.setObject(1, id);
+        statement.executeUpdate();
+    }
+
+    public synchronized KeyPoint getKeyPoint(int id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("select * from keypoint where id = ?");
+        statement.setObject(1, id);
+        ResultSet result = statement.executeQuery();
+        LocalTime estimated = result.getString("time_estimated") == null ||
+                result.getString("time_estimated").isBlank() ? LocalTime.MIN :
+                LocalTime.parse(result.getString("time_estimated"));
+        LocalTime spent = result.getString("time_spent") == null ||
+                result.getString("time_spent").isBlank() ? LocalTime.MIN :
+                LocalTime.parse(result.getString("time_spent"));
+        return new KeyPoint(id,
+                result.getInt("task_id"),
+                result.getString("title"),
+                result.getString("solution"),
+                estimated,
+                spent,
+                result.getInt("state")).setListenerOnEdit(this);
+    }
+
+    public synchronized ArrayList<KeyPoint> getKeyPoints(int taskId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("select id from keypoint where task_id = ?");
+        statement.setObject(1, taskId);
+        ResultSet result = statement.executeQuery();
+        ArrayList<KeyPoint> keyPoints = new ArrayList<>();
+        while (result.next())
+            keyPoints.add(getKeyPoint(result.getInt(1)));
+        return keyPoints;
+    }
+
+    public synchronized void editKeyPoint(KeyPoint edited) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("update keypoint set title = ?," +
+                "solution = ?, time_estimated = ?, time_spent = ?, state = ? where id = ?");
+        statement.setObject(1, edited.getTitle());
+        statement.setObject(2, edited.getSolution());
+        statement.setObject(3, edited.getTimeEstimated() == null ? "" :
+                edited.getTimeEstimated().toString());
+        statement.setObject(4, edited.getTimeSpent() == null ? "" :
+                edited.getTimeSpent().toString());
+        statement.setObject(5, edited.getState());
+        statement.setObject(6, edited.getId());
+        statement.executeUpdate();
+    }
+
+    public synchronized void addLabelToTask(int labelId, int taskId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("insert into label_task (label_id, task_id) " +
+                "values (?, ?)");
+        statement.setObject(1, labelId);
+        statement.setObject(2, taskId);
+        statement.executeUpdate();
+    }
+
+    public synchronized void removeLabelFromTask(int labelId, int taskId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("delete from label_task " +
+                "where (label_id = ?, task_id = ?)");
+        statement.setObject(1, labelId);
+        statement.setObject(2, taskId);
+        statement.executeUpdate();
     }
 }

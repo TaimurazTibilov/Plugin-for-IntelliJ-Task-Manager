@@ -10,6 +10,7 @@ public class KeyPoint {
     private LocalTime timeEstimated;
     private LocalTime timeSpent;
     private int state;
+    private DataEditor listenerOnEdit;
 
     public KeyPoint(int id, int taskId, String title, String solution,
                     LocalTime timeEstimated, LocalTime timeSpent, int state) {
@@ -48,6 +49,11 @@ public class KeyPoint {
 
     public int getState() {
         return state;
+    }
+
+    public KeyPoint setListenerOnEdit(DataEditor listenerOnEdit) {
+        this.listenerOnEdit = listenerOnEdit;
+        return this;
     }
 
     public void setTitle(String title) {

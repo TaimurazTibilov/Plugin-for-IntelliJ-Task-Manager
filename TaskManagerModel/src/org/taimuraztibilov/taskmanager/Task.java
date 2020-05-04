@@ -15,6 +15,7 @@ public class Task {
     private LocalTime timeSpent;
     private int state;
     private ArrayList<Label> labels;
+    private ArrayList<KeyPoint> keyPoints;
     private DataEditor listenerOnEdit;
 
     public Task(int id, int milestoneId, String title, String description, LocalDateTime createdOn,
@@ -29,6 +30,7 @@ public class Task {
         this.timeSpent = timeSpent;
         this.state = state;
         this.labels = new ArrayList<>();
+        this.keyPoints = new ArrayList<>();
     }
 
     public int getId() {
@@ -65,6 +67,14 @@ public class Task {
 
     public int getState() {
         return state;
+    }
+
+    public ArrayList<Label> getLabels() {
+        return labels;
+    }
+
+    public ArrayList<KeyPoint> getKeyPoints() {
+        return keyPoints;
     }
 
     public Task setListenerOnEdit(DataEditor listenerOnEdit) {
@@ -104,6 +114,14 @@ public class Task {
         this.state = state;
     }
 
+    public void setLabels(ArrayList<Label> labels) {
+        this.labels = labels;
+    }
+
+    public void setKeyPoints(ArrayList<KeyPoint> keyPoints) {
+        this.keyPoints = keyPoints;
+    }
+
     public void addLabel(Label label) {
         if (labels.contains(label))
             return;
@@ -112,5 +130,13 @@ public class Task {
 
     public void removeLabel(Label label) {
         labels.remove(label);
+    }
+
+    public void addKeyPoint(KeyPoint keyPoint) {
+        keyPoints.add(keyPoint);
+    }
+
+    public void removeKeyPoint(KeyPoint keyPoint) {
+        keyPoints.remove(keyPoint);
     }
 }

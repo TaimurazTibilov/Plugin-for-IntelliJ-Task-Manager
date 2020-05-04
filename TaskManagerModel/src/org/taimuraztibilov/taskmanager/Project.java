@@ -1,12 +1,14 @@
 package org.taimuraztibilov.taskmanager;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Project {
     private final int id;
     private String title;
     private String description;
     private int state;
+    private ArrayList<Milestone> milestones;
     private DataEditor listenerOnEdit;
 
     public Project(int id, String title, String description, int state) {
@@ -14,6 +16,7 @@ public class Project {
         this.title = title;
         this.description = description;
         this.state = state;
+        this.milestones = new ArrayList<>();
     }
 
     public int getId() {
@@ -30,6 +33,10 @@ public class Project {
 
     public int getState() {
         return state;
+    }
+
+    public ArrayList<Milestone> getMilestones() {
+        return milestones;
     }
 
     public Project setListenerOnEdit(DataEditor listenerOnEdit) {
@@ -50,5 +57,9 @@ public class Project {
     public void setState(int state) throws SQLException {
         this.state = state;
         listenerOnEdit.editProject(this);
+    }
+
+    public void setMilestones(ArrayList<Milestone> milestones) {
+        this.milestones = milestones;
     }
 }

@@ -2,6 +2,7 @@ package org.taimuraztibilov.taskmanager;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Milestone {
     private final int id;
@@ -10,6 +11,7 @@ public class Milestone {
     private String description;
     private LocalDateTime deadline;
     private int state;
+    private ArrayList<Task> tasks;
     private DataEditor listenerOnEdit;
 
     public Milestone(int id, int projectId, String title, String description, LocalDateTime deadline, int state) {
@@ -19,6 +21,7 @@ public class Milestone {
         this.description = description;
         this.deadline = deadline;
         this.state = state;
+        this.tasks = new ArrayList<>();
     }
 
     public int getId() {
@@ -45,6 +48,10 @@ public class Milestone {
         return state;
     }
 
+    public ArrayList<Task> getTasks() {
+        return tasks;
+    }
+
     public Milestone setListenerOnEdit(DataEditor listenerOnEdit) {
         this.listenerOnEdit = listenerOnEdit;
         return this;
@@ -68,5 +75,9 @@ public class Milestone {
     public void setState(int state) throws SQLException {
         this.state = state;
         listenerOnEdit.editMilestone(this);
+    }
+
+    public void setTasks(ArrayList<Task> tasks) {
+        this.tasks = tasks;
     }
 }
