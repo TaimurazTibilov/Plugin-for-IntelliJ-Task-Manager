@@ -1,26 +1,19 @@
 package org.taimuraztibilov.taskmanager;
 
-public class LabelModel {
+public class Label {
     private final int id;
-    private final int projectId;
     private String color;
     private String title;
-    private String description;
+    private DataEditor listenerOnEdit;
 
-    public LabelModel(int id, int projectId, String color, String title, String description) {
+    public Label(int id, String color, String title) {
         this.id = id;
-        this.projectId = projectId;
         this.color = color;
         this.title = title;
-        this.description = description;
     }
 
     public int getId() {
         return id;
-    }
-
-    public int getProjectId() {
-        return projectId;
     }
 
     public String getColor() {
@@ -31,8 +24,9 @@ public class LabelModel {
         return title;
     }
 
-    public String getDescription() {
-        return description;
+    public Label setListenerOnEdit(DataEditor listenerOnEdit) {
+        this.listenerOnEdit = listenerOnEdit;
+        return this;
     }
 
     public void setColor(String color) {
@@ -41,9 +35,5 @@ public class LabelModel {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }

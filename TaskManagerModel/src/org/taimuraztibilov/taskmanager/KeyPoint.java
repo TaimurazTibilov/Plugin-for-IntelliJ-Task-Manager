@@ -2,7 +2,7 @@ package org.taimuraztibilov.taskmanager;
 
 import java.time.LocalTime;
 
-public class KeyPointModel {
+public class KeyPoint {
     private final int id;
     private final int taskId;
     private String title;
@@ -11,8 +11,8 @@ public class KeyPointModel {
     private LocalTime timeSpent;
     private int state;
 
-    public KeyPointModel(int id, int taskId, String title, String solution,
-                         LocalTime timeEstimated, LocalTime timeSpent, int state) {
+    public KeyPoint(int id, int taskId, String title, String solution,
+                    LocalTime timeEstimated, LocalTime timeSpent, int state) {
         this.id = id;
         this.taskId = taskId;
         this.title = title;
