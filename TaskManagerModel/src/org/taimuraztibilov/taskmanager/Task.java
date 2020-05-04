@@ -1,5 +1,6 @@
 package org.taimuraztibilov.taskmanager;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ public class Task {
     private int milestoneId;
     private String title;
     private String description;
-    private LocalDateTime createdOn;
+    private final LocalDateTime createdOn;
     private LocalDateTime deadline;
     private LocalTime timeEstimated;
     private LocalTime timeSpent;
@@ -82,36 +83,39 @@ public class Task {
         return this;
     }
 
-    public void setMilestoneId(int milestoneId) {
+    public void setMilestoneId(int milestoneId) throws SQLException {
         this.milestoneId = milestoneId;
+        listenerOnEdit.editTask(this);
     }
 
-    public void setTitle(String title) {
+    public void setTitle(String title) throws SQLException {
         this.title = title;
+        listenerOnEdit.editTask(this);
     }
 
-    public void setDescription(String description) {
+    public void setDescription(String description) throws SQLException {
         this.description = description;
+        listenerOnEdit.editTask(this);
     }
 
-    public void setCreatedOn(LocalDateTime createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public void setDeadline(LocalDateTime deadline) {
+    public void setDeadline(LocalDateTime deadline) throws SQLException {
         this.deadline = deadline;
+        listenerOnEdit.editTask(this);
     }
 
-    public void setTimeEstimated(LocalTime timeEstimated) {
+    public void setTimeEstimated(LocalTime timeEstimated) throws SQLException {
         this.timeEstimated = timeEstimated;
+        listenerOnEdit.editTask(this);
     }
 
-    public void setTimeSpent(LocalTime timeSpent) {
+    public void setTimeSpent(LocalTime timeSpent) throws SQLException {
         this.timeSpent = timeSpent;
+        listenerOnEdit.editTask(this);
     }
 
-    public void setState(int state) {
+    public void setState(int state) throws SQLException {
         this.state = state;
+        listenerOnEdit.editTask(this);
     }
 
     public void setLabels(ArrayList<Label> labels) {
@@ -122,13 +126,17 @@ public class Task {
         this.keyPoints = keyPoints;
     }
 
-    public void addLabel(Label label) {
+    public void addLabel(Label label) throws SQLException {
         if (labels.contains(label))
             return;
+        listenerOnEdit.addLabelToTask(label.getId(), id);
         labels.add(label);
     }
 
-    public void removeLabel(Label label) {
+    public void removeLabel(Label label) throws SQLException {
+        if (!labels.contains(label))
+            return;
+        listenerOnEdit.removeLabelFromTask(label.getId(), id);
         labels.remove(label);
     }
 

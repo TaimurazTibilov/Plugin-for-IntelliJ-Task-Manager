@@ -1,5 +1,6 @@
 package org.taimuraztibilov.taskmanager;
 
+import java.sql.SQLException;
 import java.time.LocalTime;
 
 public class KeyPoint {
@@ -56,23 +57,28 @@ public class KeyPoint {
         return this;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(String title) throws SQLException {
         this.title = title;
+        listenerOnEdit.editKeyPoint(this);
     }
 
-    public void setSolution(String solution) {
+    public void setSolution(String solution) throws SQLException {
         this.solution = solution;
+        listenerOnEdit.editKeyPoint(this);
     }
 
-    public void setTimeEstimated(LocalTime timeEstimated) {
+    public void setTimeEstimated(LocalTime timeEstimated) throws SQLException {
         this.timeEstimated = timeEstimated;
+        listenerOnEdit.editKeyPoint(this);
     }
 
-    public void setTimeSpent(LocalTime timeSpent) {
+    public void setTimeSpent(LocalTime timeSpent) throws SQLException {
         this.timeSpent = timeSpent;
+        listenerOnEdit.editKeyPoint(this);
     }
 
-    public void setState(int state) {
+    public void setState(int state) throws SQLException {
         this.state = state;
+        listenerOnEdit.editKeyPoint(this);
     }
 }

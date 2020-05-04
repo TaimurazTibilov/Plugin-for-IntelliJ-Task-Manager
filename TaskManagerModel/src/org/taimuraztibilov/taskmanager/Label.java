@@ -1,5 +1,7 @@
 package org.taimuraztibilov.taskmanager;
 
+import java.sql.SQLException;
+
 public class Label {
     private final int id;
     private String color;
@@ -29,11 +31,13 @@ public class Label {
         return this;
     }
 
-    public void setColor(String color) {
+    public void setColor(String color) throws SQLException {
         this.color = color;
+        listenerOnEdit.editLabel(this);
     }
 
-    public void setTitle(String title) {
+    public void setTitle(String title) throws SQLException {
         this.title = title;
+        listenerOnEdit.editLabel(this);
     }
 }
