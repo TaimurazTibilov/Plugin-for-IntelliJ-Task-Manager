@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -89,11 +90,9 @@ public class DataBaseManager implements DataEditor {
         statement.executeUpdate("create table if not exists keypoint (" +
                 "id integer primary key autoincrement not null," +
                 "task_id integer not null," +
-                "title text not null," +
                 "solution text," +
-                "time_estimated text," +
+                "date_closed text," +
                 "time_spent text," +
-                "state int not null," +
                 "foreign key (task_id) references task(id))");
     }
 
@@ -155,6 +154,12 @@ public class DataBaseManager implements DataEditor {
             projects.add(getProject(result.getInt("id")));
 
         return projects;
+    }
+
+    @Override
+    public void editData(String table, String column, String value, int id) throws SQLException {
+        connection.createStatement().executeUpdate("update " + table + " set " +
+                column + " = " + value + " where id = " + id);
     }
 
     public synchronized void editProject(Project edited) throws SQLException {
@@ -386,20 +391,21 @@ public class DataBaseManager implements DataEditor {
         statement.executeUpdate();
     }
 
-    public synchronized KeyPoint addKeyPoint(Task task, String title, String solution, LocalTime timeEstimated
-            , int state) throws SQLException {
+    public synchronized KeyPoint addKeyPoint(Task task, String solution, LocalDate date) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("insert into keypoint " +
-                "(task_id, title, solution, time_estimated, time_spent, state) values (?, ?, ?, ?, ?, ?)");
+                "(task_id, solution, date_closed, time_spent) values (?, ?, ?, ?)");
         statement.setObject(1, task.getId());
-        statement.setObject(2, title);
-        statement.setObject(3, solution);
-        statement.setObject(4, timeEstimated == null ? "" : timeEstimated.toString());
-        statement.setObject(5, LocalTime.MIN.toString());
-        statement.setObject(6, state);
+        statement.setObject(2, solution);
+        statement.setObject(3, date.toString());
+        statement.setObject(4, LocalTime.MIN.toString());
         statement.executeUpdate();
         ResultSet result = connection.createStatement().executeQuery("select max(id) from keypoint");
-        KeyPoint keyPoint = new KeyPoint(result.getInt(1), task.getId(), title, solution, timeEstimated,
-                LocalTime.MIN, state).setListenerOnEdit(this);
+        KeyPoint keyPoint = new KeyPoint(
+                result.getInt(1),
+                task.getId(),
+                solution,
+                date,
+                LocalTime.MIN).setListenerOnEdit(this);
         task.addKeyPoint(keyPoint);
         return keyPoint;
     }
@@ -414,19 +420,15 @@ public class DataBaseManager implements DataEditor {
         PreparedStatement statement = connection.prepareStatement("select * from keypoint where id = ?");
         statement.setObject(1, id);
         ResultSet result = statement.executeQuery();
-        LocalTime estimated = result.getString("time_estimated") == null ||
-                result.getString("time_estimated").isBlank() ? LocalTime.MIN :
-                LocalTime.parse(result.getString("time_estimated"));
+        LocalDate date = LocalDate.parse(result.getString("date"));
         LocalTime spent = result.getString("time_spent") == null ||
                 result.getString("time_spent").isBlank() ? LocalTime.MIN :
                 LocalTime.parse(result.getString("time_spent"));
         return new KeyPoint(id,
                 result.getInt("task_id"),
-                result.getString("title"),
                 result.getString("solution"),
-                estimated,
-                spent,
-                result.getInt("state")).setListenerOnEdit(this);
+                date,
+                spent).setListenerOnEdit(this);
     }
 
     public synchronized ArrayList<KeyPoint> getKeyPoints(int taskId) throws SQLException {
@@ -440,16 +442,13 @@ public class DataBaseManager implements DataEditor {
     }
 
     public synchronized void editKeyPoint(KeyPoint edited) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("update keypoint set title = ?," +
-                "solution = ?, time_estimated = ?, time_spent = ?, state = ? where id = ?");
-        statement.setObject(1, edited.getTitle());
-        statement.setObject(2, edited.getSolution());
-        statement.setObject(3, edited.getTimeEstimated() == null ? "" :
-                edited.getTimeEstimated().toString());
-        statement.setObject(4, edited.getTimeSpent() == null ? "" :
+        PreparedStatement statement = connection.prepareStatement("update keypoint set " +
+                "solution = ?, date_closed = ?, time_spent = ? where id = ?");
+        statement.setObject(1, edited.getSolution());
+        statement.setObject(2, edited.getDate().toString());
+        statement.setObject(3, edited.getTimeSpent() == null ? "" :
                 edited.getTimeSpent().toString());
-        statement.setObject(5, edited.getState());
-        statement.setObject(6, edited.getId());
+        statement.setObject(4, edited.getId());
         statement.executeUpdate();
     }
 
