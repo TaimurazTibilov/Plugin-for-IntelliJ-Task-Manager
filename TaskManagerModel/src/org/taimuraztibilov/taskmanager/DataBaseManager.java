@@ -49,7 +49,6 @@ public class DataBaseManager implements DataEditor {
                 "title text not null," +
                 "description text," +
                 "state int not null)");
-//        statement.executeUpdate("insert into project (name, state) values('my_first_proj', 1)");
     }
 
     private void createMilestoneTable() throws SQLException {
@@ -466,5 +465,19 @@ public class DataBaseManager implements DataEditor {
         statement.setObject(1, labelId);
         statement.setObject(2, taskId);
         statement.executeUpdate();
+    }
+
+    public synchronized ResultSet getReportData(LocalDate from, LocalDate to, int projectId) throws SQLException {
+        return connection.createStatement().executeQuery(
+                "select t.title_m, t.title_t, k.date_closed, k.solution, k.time_spent " +
+                "from keypoint k " +
+                "inner join " +
+                "(select ta.id, ta.title as title_t, m.title as title_m " +
+                "from task ta " +
+                "inner join milestone m on ta.milestone_id = m.id and m.project_id = " + projectId + ") t " +
+                "on t.id = k.task_id " +
+                "where date(k.date_closed) >= date(" + from.toString() + ") and " +
+                "date(k.date_closed) <= date(" + to.toString() + ") " +
+                "order by 1, 2, 3");
     }
 }

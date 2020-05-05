@@ -3,12 +3,14 @@ package org.taimuraztibilov.taskmanager;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class TimeManager {
     private static TimeManager instance;
     private KeyPoint current;
     private LocalDateTime start;
+
+    private TimeManager() {
+    }
 
     public static synchronized TimeManager getInstance() {
         if (instance == null)
