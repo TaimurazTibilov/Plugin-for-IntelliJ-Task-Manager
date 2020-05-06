@@ -33,11 +33,11 @@ public class Label {
 
     public void setColor(String color) throws SQLException {
         this.color = color;
-        listenerOnEdit.editLabel(this);
+        listenerOnEdit.editData("label", "color", color, id);
     }
 
     public void setTitle(String title) throws SQLException {
         this.title = title;
-        listenerOnEdit.editLabel(this);
+        listenerOnEdit.editData("label", "title", title, id);
     }
 }

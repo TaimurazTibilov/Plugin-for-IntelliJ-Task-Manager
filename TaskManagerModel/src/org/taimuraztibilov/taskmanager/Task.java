@@ -85,37 +85,37 @@ public class Task {
 
     public void setMilestoneId(int milestoneId) throws SQLException {
         this.milestoneId = milestoneId;
-        listenerOnEdit.editTask(this);
+        listenerOnEdit.editData("task", "milestone_id", String.valueOf(milestoneId), id);
     }
 
     public void setTitle(String title) throws SQLException {
         this.title = title;
-        listenerOnEdit.editTask(this);
+        listenerOnEdit.editData("task", "title", title, id);
     }
 
     public void setDescription(String description) throws SQLException {
         this.description = description;
-        listenerOnEdit.editTask(this);
+        listenerOnEdit.editData("task", "description", description, id);
     }
 
     public void setDeadline(LocalDateTime deadline) throws SQLException {
         this.deadline = deadline;
-        listenerOnEdit.editTask(this);
+        listenerOnEdit.editData("task", "deadline", deadline.toString(), id);
     }
 
     public void setTimeEstimated(LocalTime timeEstimated) throws SQLException {
         this.timeEstimated = timeEstimated;
-        listenerOnEdit.editTask(this);
+        listenerOnEdit.editData("task", "time_estimated", timeEstimated.toString(), id);
     }
 
     public void setTimeSpent(LocalTime timeSpent) throws SQLException {
         this.timeSpent = timeSpent;
-        listenerOnEdit.editTask(this);
+        listenerOnEdit.editData("task", "time_spent", timeSpent.toString(), id);
     }
 
     public void setState(int state) throws SQLException {
         this.state = state;
-        listenerOnEdit.editTask(this);
+        listenerOnEdit.editData("task", "state", String.valueOf(state), id);
     }
 
     public void setLabels(ArrayList<Label> labels) {

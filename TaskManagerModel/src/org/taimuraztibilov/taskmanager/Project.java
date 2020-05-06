@@ -46,17 +46,17 @@ public class Project {
 
     public void setTitle(String title) throws SQLException {
         this.title = title;
-        listenerOnEdit.editProject(this);
+        listenerOnEdit.editData("project", "title", title, id);
     }
 
     public void setDescription(String description) throws SQLException {
         this.description = description;
-        listenerOnEdit.editProject(this);
+        listenerOnEdit.editData("project", "description", description, id);
     }
 
     public void setState(int state) throws SQLException {
         this.state = state;
-        listenerOnEdit.editProject(this);
+        listenerOnEdit.editData("project", "state", String.valueOf(state), id);
     }
 
     public void setMilestones(ArrayList<Milestone> milestones) {

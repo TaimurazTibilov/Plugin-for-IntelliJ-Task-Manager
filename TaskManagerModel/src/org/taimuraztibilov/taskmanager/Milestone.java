@@ -59,22 +59,22 @@ public class Milestone {
 
     public void setTitle(String title) throws SQLException {
         this.title = title;
-        listenerOnEdit.editMilestone(this);
+        listenerOnEdit.editData("milestone", "title", title, id);
     }
 
     public void setDescription(String description) throws SQLException {
         this.description = description;
-        listenerOnEdit.editMilestone(this);
+        listenerOnEdit.editData("milestone", "description", description, id);
     }
 
     public void setDeadline(LocalDateTime deadline) throws SQLException {
         this.deadline = deadline;
-        listenerOnEdit.editMilestone(this);
+        listenerOnEdit.editData("milestone", "deadline", deadline.toString(), id);
     }
 
     public void setState(int state) throws SQLException {
         this.state = state;
-        listenerOnEdit.editMilestone(this);
+        listenerOnEdit.editData("milestone", "state", String.valueOf(state), id);
     }
 
     public void setTasks(ArrayList<Task> tasks) {

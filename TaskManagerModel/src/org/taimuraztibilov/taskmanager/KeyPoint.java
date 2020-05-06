@@ -47,16 +47,16 @@ public class KeyPoint {
 
     public void setSolution(String solution) throws SQLException {
         this.solution = solution;
-        listenerOnEdit.editKeyPoint(this);
+        listenerOnEdit.editData("keypoint", "solution", solution, id);
     }
 
     public void setDate(LocalDate date) throws SQLException {
         this.date = date;
-        listenerOnEdit.editKeyPoint(this);
+        listenerOnEdit.editData("keypoint", "date_closed", date.toString(), id);
     }
 
     public void setTimeSpent(LocalTime timeSpent) throws SQLException {
         this.timeSpent = timeSpent;
-        listenerOnEdit.editKeyPoint(this);
+        listenerOnEdit.editData("keypoint", "time_spent", timeSpent.toString(), id);
     }
 }
