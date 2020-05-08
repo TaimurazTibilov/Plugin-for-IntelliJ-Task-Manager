@@ -2,6 +2,9 @@ package org.taimuraztibilov.taskmanager.ui;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
+import com.intellij.ui.ColorPicker;
+import com.intellij.ui.JBColor;
+import com.intellij.ui.colorpicker.ColorPickerBuilder;
 import com.intellij.ui.components.*;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
@@ -67,7 +70,7 @@ public class DataFormBuilder {
         form.add(getState);
 
         JBPanel buttons = new JBPanel(new GridLayoutManager(1, 2,
-                JBUI.insets(10,10), 0, 0));
+                JBUI.insets(10, 10), 0, 0));
         JButton createButton = new JButton("Create");
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
@@ -158,7 +161,7 @@ public class DataFormBuilder {
         form.add(getState);
 
         JBPanel buttons = new JBPanel(new GridLayoutManager(1, 2,
-                JBUI.insets(10,10), 0, 0));
+                JBUI.insets(10, 10), 0, 0));
         JButton createButton = new JButton("Create");
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
@@ -188,6 +191,7 @@ public class DataFormBuilder {
         buttons.add(createButton);
         buttons.add(cancelButton);
         form.add(buttons);
+        createProject.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         createProject.setContentPane(form);
         createProject.pack();
         createProject.setVisible(true);
@@ -270,7 +274,7 @@ public class DataFormBuilder {
         form.add(getLabels);
 
         JBPanel buttons = new JBPanel(new GridLayoutManager(1, 2,
-                JBUI.insets(10,10), 0, 0));
+                JBUI.insets(10, 10), 0, 0));
         JButton createButton = new JButton("Create");
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
@@ -308,6 +312,56 @@ public class DataFormBuilder {
         buttons.add(createButton);
         buttons.add(cancelButton);
         form.add(buttons);
+        createProject.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        createProject.setContentPane(form);
+        createProject.pack();
+        createProject.setVisible(true);
+    }
+
+    public void addLabelByUser() {
+        JFrame createProject = new JFrame("Add new label");
+        JBPanel form = new JBPanel();
+        form.setLayout(new GridLayoutManager(2, 1,
+                JBUI.insets(12, 20), 20, 20));
+
+        JBPanel title = new JBPanel(new BorderLayout());
+        JBLabel label = new JBLabel("Title: ",
+                UIUtil.ComponentStyle.REGULAR, UIUtil.FontColor.NORMAL);
+        label.setHorizontalAlignment(SwingConstants.LEFT);
+        title.add(label);
+        JBTextField getTitle = new JBTextField("");
+        getTitle.setFont(label.getFont());
+        title.add(getTitle);
+        form.add(title);
+
+        JBPanel buttons = new JBPanel(new GridLayoutManager(1, 2,
+                JBUI.insets(10, 10), 0, 0));
+        JButton createButton = new JButton("Create");
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createProject.dispose();
+            }
+        });
+        createButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String title = getTitle.getText();
+                    String color = String.valueOf(JBColor.WHITE.getRGB());
+                    DataBaseManager.getInstance().addLabel(color, title);
+                    // TODO: 08.05.2020 Notification that project was added correctly
+                    createProject.dispose();
+                } catch (SQLException throwables) {
+                    // TODO: 08.05.2020 Show notification about exception
+                }
+            }
+        });
+        buttons.add(createButton);
+        buttons.add(cancelButton);
+        form.add(buttons);
+        createProject.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         createProject.setContentPane(form);
         createProject.pack();
         createProject.setVisible(true);
