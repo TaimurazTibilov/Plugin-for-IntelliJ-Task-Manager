@@ -1,5 +1,5 @@
 <idea-plugin>
-    <id>org.taimuraztibilov.task_manager</id>
+    <id>org.taimuraztibilov.taskmanager</id>
     <name>Task monitoring manager</name>
     <vendor email="taimuraztibilov@yandex.ru" url="https://github.com/TaimurazTibilov">Taimuraz Tibilov</vendor>
 
@@ -18,7 +18,11 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <toolWindow id="Task Manager" anchor="right" secondary="false" factoryClass="org.taimuraztibilov.taskmanager.ui.ToolWindowManager" />
+        <projectService serviceImplementation="org.taimuraztibilov.taskmanager.base.DataBaseManager" />
+        <projectService serviceImplementation="org.taimuraztibilov.taskmanager.base.ReportManager" />
+        <projectService serviceImplementation="org.taimuraztibilov.taskmanager.base.TimeManager" />
+        <projectService serviceImplementation="org.taimuraztibilov.taskmanager.base.PluginManagerService" />
     </extensions>
 
     <actions>

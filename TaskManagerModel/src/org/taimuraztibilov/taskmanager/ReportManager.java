@@ -7,16 +7,17 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public class TaskManager {
-    private static TaskManager instance;
+public class ReportManager {
+    private static ReportManager instance;
 
-    private TaskManager() {
+    private ReportManager() {
     }
 
-    public static synchronized TaskManager getInstance() {
+    public static synchronized ReportManager getInstance() {
         if (instance == null)
-            instance = new TaskManager();
+            instance = new ReportManager();
         return instance;
     }
 
@@ -26,7 +27,7 @@ public class TaskManager {
             String path = projectPath;
             if (projectPath.charAt(projectPath.length() - 1) != '\\' && projectPath.charAt(projectPath.length() - 1) != '/')
                 path += '\\';
-            path += "Report on " + LocalDate.now().toString() + ".csv";
+            path += "Report on " + LocalDateTime.now().toString() + ".csv";
             CSVWriter writer = new CSVWriter(new FileWriter(path));
             writer.writeNext(new String[]{"Отчет по проекту с " + from.toString() + " по " + to.toString()});
             writer.writeNext(new String[]{
