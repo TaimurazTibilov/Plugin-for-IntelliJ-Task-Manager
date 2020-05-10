@@ -217,6 +217,8 @@ public class ShowDataFormBuilder {
         component.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (projects.size() == 0)
+                    return;
                 if (e.getClickCount() == 2) {
                     int selected = ((JBList<?>) e.getSource()).locationToIndex(e.getPoint());
                     showProjectData(projects.get(selected));
@@ -268,6 +270,8 @@ public class ShowDataFormBuilder {
         component.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (milestones.size() == 0)
+                    return;
                 if (e.getClickCount() == 2) {
                     int selected = ((JBList<?>) e.getSource()).locationToIndex(e.getPoint());
                     showMilestoneData(milestones.get(selected));
@@ -311,13 +315,15 @@ public class ShowDataFormBuilder {
         constraints.setRow(1);
         JBList<String> component = new JBList<>();
         try {
-            component = getTaskList(PluginManagerService.getInstance().getTrackingTask());
+            component = getTaskList(PluginManagerService.getInstance().getTrackingMilestone());
         } catch (SQLException throwables) {
             // TODO: 09.05.2020 Notification
         }
         component.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (tasks.size() == 0)
+                    return;
                 if (e.getClickCount() == 2) {
                     int selected = ((JBList<?>) e.getSource()).locationToIndex(e.getPoint());
                     showTaskData(tasks.get(selected));
@@ -338,7 +344,7 @@ public class ShowDataFormBuilder {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if (PluginManagerService.getInstance().getTrackingTask() == -1)
+                    if (PluginManagerService.getInstance().getTrackingTask() == -1 || tasks.size() == 0)
                         return;
                     int onTrack = tasks.get(list.getSelectedIndex()).getId();
                     PluginManagerService.getInstance().setTrackingTask(onTrack);
@@ -406,7 +412,7 @@ public class ShowDataFormBuilder {
         JFrame createProject = new JFrame(milestone.getTitle());
         GridConstraints constraints = new GridConstraints();
         JBPanel form = new JBPanel();
-        form.setLayout(new GridLayoutManager(3, 1,
+        form.setLayout(new GridLayoutManager(4, 1,
                 JBUI.insets(12, 20), 20, 20));
 
         JBPanel title = new JBPanel(new BorderLayout());
@@ -455,7 +461,7 @@ public class ShowDataFormBuilder {
         JFrame createProject = new JFrame(task.getTitle());
         GridConstraints constraints = new GridConstraints();
         JBPanel form = new JBPanel();
-        form.setLayout(new GridLayoutManager(3, 1,
+        form.setLayout(new GridLayoutManager(5, 1,
                 JBUI.insets(12, 20), 20, 20));
 
         JBPanel title = new JBPanel(new BorderLayout());
@@ -495,7 +501,7 @@ public class ShowDataFormBuilder {
         label.setHorizontalAlignment(SwingConstants.LEFT);
         panel.add(label);
         form.add(panel, constraints);
-        constraints.setRow(3);
+        constraints.setRow(4);
 
         JBPanel getState = new JBPanel(new BorderLayout());
         label = new JBLabel("State: " + States.toString(task.getState()),

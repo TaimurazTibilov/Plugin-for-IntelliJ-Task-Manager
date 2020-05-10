@@ -41,7 +41,7 @@
                 <action class="org.taimuraztibilov.taskmanager.action.AddTaskAction"
                         id="org.taimuraztibilov.taskmanager.action.AddTaskAction" text="Task"
                         description="Add new task to track and report">
-                    <keyboard-shortcut first-keystroke="control alt A" keymap="$default"/>
+                    <keyboard-shortcut first-keystroke="control alt T" keymap="$default"/>
                 </action>
                 <action class="org.taimuraztibilov.taskmanager.action.AddLabelAction"
                         id="org.taimuraztibilov.taskmanager.action.AddLabelAction" text="Label"
@@ -55,10 +55,15 @@
                     description="Shows all existing tasks to track">
                 <keyboard-shortcut first-keystroke="shift alt P" keymap="$default"/>
             </action>
-            <action class="org.taimuraztibilov.taskmanager.action.TrackProjectAction"
-                    id="org.taimuraztibilov.taskmanager.action.TrackProjectAction" text="Choose Project To Track"
-                    description="Shows all existing tasks to track">
-                <keyboard-shortcut first-keystroke="shift alt P" keymap="$default"/>
+            <action class="org.taimuraztibilov.taskmanager.action.TrackMilestoneAction"
+                    id="org.taimuraztibilov.taskmanager.action.TrackMilestoneAction" text="Choose Milestone To Track"
+                    description="Shows all existing milestones for tracked project to track">
+                <keyboard-shortcut first-keystroke="shift alt M" keymap="$default"/>
+            </action>
+            <action class="org.taimuraztibilov.taskmanager.action.TrackTaskAction"
+                    id="org.taimuraztibilov.taskmanager.action.TrackTaskAction" text="Choose Task To Track"
+                    description="Shows all existing tasks for tracked milestone to track">
+                <keyboard-shortcut first-keystroke="shift alt T" keymap="$default"/>
             </action>
         </group>
     </actions>

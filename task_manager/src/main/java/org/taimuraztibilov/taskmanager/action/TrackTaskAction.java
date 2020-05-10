@@ -7,16 +7,16 @@ import org.jetbrains.annotations.NotNull;
 import org.taimuraztibilov.taskmanager.base.PluginManagerService;
 import org.taimuraztibilov.taskmanager.ui.ShowDataFormBuilder;
 
-public class TrackMilestoneAction extends AnAction {
+public class TrackTaskAction extends AnAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         Project project = e.getProject();
         e.getPresentation().setVisible(project != null);
-        e.getPresentation().setEnabled(PluginManagerService.getInstance().getTrackingProject() != -1);
+        e.getPresentation().setEnabled(PluginManagerService.getInstance().getTrackingMilestone() != -1);
     }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        ShowDataFormBuilder.showMilestones();
+        ShowDataFormBuilder.showTasks();
     }
 }
