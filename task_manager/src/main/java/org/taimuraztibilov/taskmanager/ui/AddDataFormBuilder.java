@@ -9,10 +9,8 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
 import org.jdesktop.swingx.JXDatePicker;
-import org.taimuraztibilov.taskmanager.base.DataBaseManager;
+import org.taimuraztibilov.taskmanager.base.*;
 import org.taimuraztibilov.taskmanager.base.Label;
-import org.taimuraztibilov.taskmanager.base.PluginManagerService;
-import org.taimuraztibilov.taskmanager.base.States;
 
 import javax.swing.*;
 import java.awt.*;
@@ -457,6 +455,102 @@ public class AddDataFormBuilder {
         buttons.add(cancelButton, constraints);
         constraints.setColumn(0);
         constraints.setRow(1);
+        form.add(buttons, constraints);
+        createProject.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        createProject.setContentPane(form);
+        createProject.pack();
+        createProject.setVisible(true);
+    }
+
+    public static synchronized void generateReport(String projectPath) {
+        JFrame createProject = new JFrame("Create new report");
+        GridConstraints constraints = new GridConstraints();
+        JBPanel form = new JBPanel();
+        form.setLayout(new GridLayoutManager(5, 1,
+                JBUI.insets(12, 20), 20, 20));
+
+        JBPanel title = new JBPanel(new BorderLayout());
+        JBLabel label = new JBLabel("Full name:   ",
+                UIUtil.ComponentStyle.REGULAR, UIUtil.FontColor.NORMAL);
+        label.setHorizontalAlignment(SwingConstants.LEFT);
+        title.add(label);
+        JBTextField getTitle = new JBTextField("");
+        getTitle.setFont(label.getFont());
+        getTitle.setColumns(50);
+        title.add(getTitle, BorderLayout.EAST);
+        form.add(title, constraints);
+        constraints.setRow(1);
+
+        JBPanel organ = new JBPanel(new BorderLayout());
+        label = new JBLabel("Organization:  ",
+                UIUtil.ComponentStyle.REGULAR, UIUtil.FontColor.NORMAL);
+        label.setHorizontalAlignment(SwingConstants.LEFT);
+        organ.add(label);
+        JBTextField getOrg = new JBTextField("");
+        getOrg.setFont(label.getFont());
+        getOrg.setColumns(50);
+        organ.add(getOrg, BorderLayout.EAST);
+        form.add(organ, constraints);
+        constraints.setRow(2);
+
+        JBPanel deadline = new JBPanel(new BorderLayout());
+        label = new JBLabel("Date from: ",
+                UIUtil.ComponentStyle.REGULAR, UIUtil.FontColor.NORMAL);
+        label.setHorizontalAlignment(SwingConstants.LEFT);
+        deadline.add(label);
+        JXDatePicker getDeadline = new JXDatePicker();
+        deadline.add(getDeadline, BorderLayout.EAST);
+        form.add(deadline, constraints);
+        constraints.setRow(3);
+
+        JBPanel dateTo = new JBPanel(new BorderLayout());
+        label = new JBLabel("Date to:   ",
+                UIUtil.ComponentStyle.REGULAR, UIUtil.FontColor.NORMAL);
+        label.setHorizontalAlignment(SwingConstants.LEFT);
+        dateTo.add(label);
+        JXDatePicker datePicker = new JXDatePicker();
+        dateTo.add(datePicker, BorderLayout.EAST);
+        form.add(dateTo, constraints);
+        constraints.setRow(0);
+
+        JBPanel buttons = new JBPanel(new GridLayoutManager(1, 2,
+                JBUI.insets(10, 10), 0, 0));
+        JButton createButton = new JButton("Create");
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createProject.dispose();
+            }
+        });
+        createButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (getDeadline.getDate() == null || datePicker.getDate() == null) {
+                        // TODO: 10.05.2020 show notification
+                        return;
+                    }
+                    String name = getTitle.getText();
+                    String organ = getOrg.getText();
+                    LocalDateTime from = LocalDateTime.parse(getDeadline.getDate().toInstant().toString()
+                            .substring(0, getDeadline.getDate().toInstant().toString().length() - 1));
+                    LocalDateTime to = LocalDateTime.parse(datePicker.getDate().toInstant().toString()
+                            .substring(0, datePicker.getDate().toInstant().toString().length() - 1));
+                    ReportManager.getInstance().generateReport(projectPath, from.toLocalDate(), to.toLocalDate(),
+                            PluginManagerService.getInstance().getTrackingProject(), organ, name);
+                    // TODO: 08.05.2020 Notification that project was added correctly
+                    createProject.dispose();
+                } catch (SQLException throwables) {
+                    // TODO: 08.05.2020 Show notification about exception
+                }
+            }
+        });
+        buttons.add(createButton, constraints);
+        constraints.setColumn(1);
+        buttons.add(cancelButton, constraints);
+        constraints.setColumn(0);
+        constraints.setRow(4);
         form.add(buttons, constraints);
         createProject.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         createProject.setContentPane(form);

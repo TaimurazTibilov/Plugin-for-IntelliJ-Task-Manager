@@ -442,8 +442,8 @@ public final class DataBaseManager implements DataEditor {
                         "from task ta " +
                         "inner join milestone m on ta.milestone_id = m.id and m.project_id = " + projectId + ") t " +
                         "on t.id = k.task_id " +
-                        "where date(k.date_closed) >= date(" + from.toString() + ") and " +
-                        "date(k.date_closed) <= date(" + to.toString() + ") " +
+                        "where date(k.date_closed) >= date(" + '\"' + from.toString() + '\"' + ") and " +
+                        "date(k.date_closed) <= date(" + '\"' + to.toString() + '\"' + ") " +
                         "order by 1, 2, 3");
     }
 }

@@ -3,12 +3,15 @@ package org.taimuraztibilov.taskmanager.base;
 import com.intellij.openapi.components.Service;
 import com.opencsv.CSVWriter;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public final class ReportManager {
@@ -28,8 +31,12 @@ public final class ReportManager {
         try {
             String path = projectPath;
             if (projectPath.charAt(projectPath.length() - 1) != '\\' && projectPath.charAt(projectPath.length() - 1) != '/')
-                path += "\\reports_taskmanager";
-            path += "Report on " + LocalDateTime.now().toString() + ".csv";
+                path += "/";
+            path += "Report_on_" + LocalDate.now() + '-' +
+                    LocalTime.now().getHour() + '-' +
+                    LocalTime.now().getMinute() + '-' +
+                    LocalTime.now().getSecond() + ".csv";
+            new File(path).createNewFile();
             CSVWriter writer = new CSVWriter(new FileWriter(path));
             writer.writeNext(new String[]{"Отчет по проекту с " + from.toString() + " по " + to.toString()});
             writer.writeNext(new String[]{

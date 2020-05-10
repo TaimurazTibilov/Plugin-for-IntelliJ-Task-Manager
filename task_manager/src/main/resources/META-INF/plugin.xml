@@ -65,6 +65,17 @@
                     description="Shows all existing tasks for tracked milestone to track">
                 <keyboard-shortcut first-keystroke="shift alt T" keymap="$default"/>
             </action>
+            <action class="org.taimuraztibilov.taskmanager.action.StopTrackAction"
+                    id="org.taimuraztibilov.taskmanager.action.StopTrackAction" text="Stop Tracking"
+                    description="Stops tracking task and creates keypoint">
+                <keyboard-shortcut first-keystroke="shift alt S" keymap="$default"/>
+            </action>
+            <separator/>
+            <action class="org.taimuraztibilov.taskmanager.action.CreateReportAction"
+                    id="org.taimuraztibilov.taskmanager.action.CreateReportAction" text="Generate Report"
+                    description="Generates report for traking project from-to date">
+                <keyboard-shortcut first-keystroke="control alt G" keymap="$default"/>
+            </action>
         </group>
     </actions>
 </idea-plugin>
