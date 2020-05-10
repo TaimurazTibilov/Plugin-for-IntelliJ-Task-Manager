@@ -18,14 +18,48 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="Task Manager" anchor="right" secondary="false" factoryClass="org.taimuraztibilov.taskmanager.ui.ToolWindowManager" />
-        <projectService serviceImplementation="org.taimuraztibilov.taskmanager.base.DataBaseManager" />
-        <projectService serviceImplementation="org.taimuraztibilov.taskmanager.base.ReportManager" />
-        <projectService serviceImplementation="org.taimuraztibilov.taskmanager.base.TimeManager" />
-        <projectService serviceImplementation="org.taimuraztibilov.taskmanager.base.PluginManagerService" />
+        <applicationService serviceImplementation="org.taimuraztibilov.taskmanager.base.DataBaseManager"/>
+        <applicationService serviceImplementation="org.taimuraztibilov.taskmanager.base.ReportManager"/>
+        <applicationService serviceImplementation="org.taimuraztibilov.taskmanager.base.TimeManager"/>
+        <applicationService serviceImplementation="org.taimuraztibilov.taskmanager.base.PluginManagerService"/>
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
+        <group id="org.taimuraztibilov.taskmanager.TaskManager" popup="true" text="Task Manager Tools">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <group id="org.taimuraztibilov.taskmanager.Add" popup="true" text="Add New">
+                <action class="org.taimuraztibilov.taskmanager.action.AddProjectAction"
+                        id="org.taimuraztibilov.taskmanager.action.AddProjectAction" text="Project"
+                        description="Add new project to track and report">
+                    <keyboard-shortcut first-keystroke="control alt P" keymap="$default"/>
+                </action>
+                <action class="org.taimuraztibilov.taskmanager.action.AddMilestoneAction"
+                        id="org.taimuraztibilov.taskmanager.action.AddMilestoneAction" text="Milestone"
+                        description="Add new milestone to track and report">
+                    <keyboard-shortcut first-keystroke="control alt M" keymap="$default"/>
+                </action>
+                <action class="org.taimuraztibilov.taskmanager.action.AddTaskAction"
+                        id="org.taimuraztibilov.taskmanager.action.AddTaskAction" text="Task"
+                        description="Add new task to track and report">
+                    <keyboard-shortcut first-keystroke="control alt A" keymap="$default"/>
+                </action>
+                <action class="org.taimuraztibilov.taskmanager.action.AddLabelAction"
+                        id="org.taimuraztibilov.taskmanager.action.AddLabelAction" text="Label"
+                        description="Add new label to pull">
+                    <keyboard-shortcut first-keystroke="control alt L" keymap="$default"/>
+                </action>
+            </group>
+            <separator/>
+            <action class="org.taimuraztibilov.taskmanager.action.TrackProjectAction"
+                    id="org.taimuraztibilov.taskmanager.action.TrackProjectAction" text="Choose Project To Track"
+                    description="Shows all existing tasks to track">
+                <keyboard-shortcut first-keystroke="shift alt P" keymap="$default"/>
+            </action>
+            <action class="org.taimuraztibilov.taskmanager.action.TrackProjectAction"
+                    id="org.taimuraztibilov.taskmanager.action.TrackProjectAction" text="Choose Project To Track"
+                    description="Shows all existing tasks to track">
+                <keyboard-shortcut first-keystroke="shift alt P" keymap="$default"/>
+            </action>
+        </group>
     </actions>
 </idea-plugin>

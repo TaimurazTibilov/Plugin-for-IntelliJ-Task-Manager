@@ -12,6 +12,12 @@ public final class PluginManagerService {
     private int trackingTask;
     private static PluginManagerService instance;
 
+    private PluginManagerService() {
+        trackingMilestone = -1;
+        trackingProject = -1;
+        trackingTask = -1;
+    }
+
     public static synchronized PluginManagerService getInstance() {
         if (instance == null)
             instance = new PluginManagerService();

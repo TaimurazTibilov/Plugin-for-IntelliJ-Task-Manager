@@ -4,9 +4,9 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-import org.taimuraztibilov.taskmanager.ui.AddDataFormBuilder;
+import org.taimuraztibilov.taskmanager.ui.ShowDataFormBuilder;
 
-public class AddProjectAction extends AnAction {
+public class TrackProjectAction extends AnAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         Project project = e.getProject();
@@ -15,6 +15,6 @@ public class AddProjectAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        AddDataFormBuilder.addProjectByUser(e.getProject());
+        ShowDataFormBuilder.showProjects();
     }
 }

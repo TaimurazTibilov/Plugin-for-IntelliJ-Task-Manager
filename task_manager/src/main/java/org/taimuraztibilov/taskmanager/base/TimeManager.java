@@ -41,4 +41,8 @@ public class TimeManager {
         taskId = -1;
         return result;
     }
+
+    public int getTaskId() {
+        return taskId;
+    }
 }

@@ -356,10 +356,10 @@ public final class DataBaseManager implements DataEditor {
         return tasks;
     }
 
-    public synchronized KeyPoint addKeyPoint(Task task, String solution, LocalDate date) throws SQLException {
+    public synchronized KeyPoint addKeyPoint(int taskId, String solution, LocalDate date) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("insert into keypoint " +
                 "(task_id, solution, date_closed, time_spent) values (?, ?, ?, ?)");
-        statement.setObject(1, task.getId());
+        statement.setObject(1, taskId);
         statement.setObject(2, solution);
         statement.setObject(3, date.toString());
         statement.setObject(4, LocalTime.MIN.toString());
@@ -367,11 +367,10 @@ public final class DataBaseManager implements DataEditor {
         ResultSet result = connection.createStatement().executeQuery("select max(id) from keypoint");
         KeyPoint keyPoint = new KeyPoint(
                 result.getInt(1),
-                task.getId(),
+                taskId,
                 solution,
                 date,
                 LocalTime.MIN).setListenerOnEdit(this);
-        task.addKeyPoint(keyPoint);
         return keyPoint;
     }
 
