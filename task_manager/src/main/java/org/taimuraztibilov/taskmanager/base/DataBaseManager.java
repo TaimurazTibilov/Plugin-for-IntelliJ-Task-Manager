@@ -44,8 +44,20 @@ public final class DataBaseManager implements DataEditor {
 
     @Override
     public void editData(String table, String column, String value, int id) throws SQLException {
+        boolean isInt = true;
+        try {
+            Integer.parseInt(value);
+        } catch (Exception e) {
+            isInt = false;
+        }
+        if (isInt) {
+            connection.createStatement().executeUpdate("update " + table + " set " +
+                    column + " = " + value + " where id = " + id);
+            return;
+        }
         connection.createStatement().executeUpdate("update " + table + " set " +
-                column + " = " + value + " where id = " + id);
+                column + " = " + '\"' + value + '\"' + " where id = " + id);
+        // TODO: 10.05.2020 переписать метод. если тип вносимых данных число, то пишем значение без кавычек, иначе в кавычках
     }
 
     public static synchronized DataBaseManager getInstance() throws SQLException {
@@ -341,7 +353,7 @@ public final class DataBaseManager implements DataEditor {
         statement = connection.prepareStatement("select label_id from label_task where task_id = ?");
         statement.setObject(1, task.getId());
         result = statement.executeQuery();
-        while (result.next())
+        if (result.next())
             task.addLabel(getLabel(result.getInt(1)));
         return task;
     }

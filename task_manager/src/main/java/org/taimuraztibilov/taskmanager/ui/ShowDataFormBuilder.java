@@ -58,144 +58,144 @@ public class ShowDataFormBuilder {
         return tasksList;
     }
 
-    public static synchronized void showTasksInformation() {
-        JFrame showData = new JFrame("Choose task to track");
-        GridConstraints constraints = new GridConstraints();
-        JBPanel form = new JBPanel();
-        form.setLayout(new GridLayoutManager(3, 3,
-                JBUI.insets(20, 8), 8, 20));
-        JBLabel label = new JBLabel("Project",
-                UIUtil.ComponentStyle.REGULAR, UIUtil.FontColor.NORMAL);
-        label.setHorizontalAlignment(SwingConstants.LEFT);
-        form.add(label, constraints);
-        constraints.setColumn(1);
-        label = new JBLabel("Milestone",
-                UIUtil.ComponentStyle.REGULAR, UIUtil.FontColor.NORMAL);
-        label.setHorizontalAlignment(SwingConstants.LEFT);
-        form.add(label, constraints);
-        constraints.setColumn(2);
-        label = new JBLabel("Task",
-                UIUtil.ComponentStyle.REGULAR, UIUtil.FontColor.NORMAL);
-        label.setHorizontalAlignment(SwingConstants.LEFT);
-        form.add(label, constraints);
-        constraints.setColumn(0);
-        constraints.setRow(1);
-
-        JBList<String> component = new JBList<>();
-        try {
-            component = getProjectList();
-        } catch (SQLException throwables) {
-            // TODO: 09.05.2020 Notification
-        }
-        component.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int selected = ((JBList<?>) e.getSource()).getSelectedIndex();
-                PluginManagerService.getInstance().setTrackingProject(selected);
-                PluginManagerService.getInstance().setTrackingTask(-1);
-                PluginManagerService.getInstance().setTrackingMilestone(-1);
-                GridConstraints constraints = new GridConstraints();
-                constraints.setRow(1);
-                constraints.setColumn(1);
-                JBList<String> component = new JBList<>();
-                try {
-                    component = getMilestoneList(selected);
-                } catch (SQLException throwables) {
-                    // TODO: 09.05.2020 Notification
-                }
-                component.addListSelectionListener(new ListSelectionListener() {
-                    @Override
-                    public void valueChanged(ListSelectionEvent e) {
-                        int selected = ((JBList<?>) e.getSource()).getSelectedIndex();
-                        PluginManagerService.getInstance().setTrackingMilestone(selected);
-                        PluginManagerService.getInstance().setTrackingTask(-1);
-                        GridConstraints constraints = new GridConstraints();
-                        constraints.setRow(1);
-                        constraints.setColumn(2);
-                        list = new JBList<>();
-                        try {
-                            list = getTaskList(selected);
-                        } catch (SQLException throwables) {
-                            // TODO: 09.05.2020 Notification
-                        }
-                        list.addMouseListener(new MouseAdapter() {
-                            @Override
-                            public void mouseClicked(MouseEvent e) {
-                                if (e.getClickCount() == 2) {
-                                    int selected = ((JBList<?>) e.getSource()).locationToIndex(e.getPoint());
-                                    showTaskData(tasks.get(selected));
-                                }
-                            }
-                        });
-                        form.add(list, constraints);
-                    }
-                });
-                component.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        if (e.getClickCount() == 2) {
-                            int selected = ((JBList<?>) e.getSource()).locationToIndex(e.getPoint());
-                            showMilestoneData(milestones.get(selected));
-                        }
-                    }
-                });
-                form.add(component, constraints);
-            }
-        });
-        component.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    int selected = ((JBList<?>) e.getSource()).locationToIndex(e.getPoint());
-                    showProjectData(projects.get(selected));
-                }
-            }
-        });
-        form.add(component, constraints);
-        constraints.setColumn(0);
-        constraints.setRow(0);
-
-        JBPanel buttons = new JBPanel(new GridLayoutManager(1, 2,
-                JBUI.insets(10, 10), 0, 0));
-        JButton createButton = new JButton("Track");
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showData.dispose();
-            }
-        });
-        createButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if (PluginManagerService.getInstance().getTrackingTask() == -1)
-                        return;
-                    int onTrack = tasks.get(list.getSelectedIndex()).getId();
-                    PluginManagerService.getInstance().setTrackingTask(onTrack);
-                    LocalTime tracked = TimeManager.getInstance().stopTracking();
-                    int trackedId = TimeManager.getInstance().getTaskId();
-                    TimeManager.getInstance().trackKeyPoint(onTrack);
-                    showData.dispose();
-                    if (trackedId == -1) {
-                        AddDataFormBuilder.addKeyPointByUser(tracked, trackedId);
-                    }
-                } catch (SQLException throwables) {
-                    // TODO: 08.05.2020 Show notification about exception
-                }
-            }
-        });
-        buttons.add(createButton, constraints);
-        constraints.setColumn(1);
-        buttons.add(cancelButton, constraints);
-        constraints.setColumn(2);
-        constraints.setRow(2);
-        form.add(buttons, constraints);
-        showData.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        showData.setContentPane(form);
-        showData.pack();
-        showData.setVisible(true);
-    }
+//    public static synchronized void showTasksInformation() {
+//        JFrame showData = new JFrame("Choose task to track");
+//        GridConstraints constraints = new GridConstraints();
+//        JBPanel form = new JBPanel();
+//        form.setLayout(new GridLayoutManager(3, 3,
+//                JBUI.insets(20, 8), 8, 20));
+//        JBLabel label = new JBLabel("Project",
+//                UIUtil.ComponentStyle.REGULAR, UIUtil.FontColor.NORMAL);
+//        label.setHorizontalAlignment(SwingConstants.LEFT);
+//        form.add(label, constraints);
+//        constraints.setColumn(1);
+//        label = new JBLabel("Milestone",
+//                UIUtil.ComponentStyle.REGULAR, UIUtil.FontColor.NORMAL);
+//        label.setHorizontalAlignment(SwingConstants.LEFT);
+//        form.add(label, constraints);
+//        constraints.setColumn(2);
+//        label = new JBLabel("Task",
+//                UIUtil.ComponentStyle.REGULAR, UIUtil.FontColor.NORMAL);
+//        label.setHorizontalAlignment(SwingConstants.LEFT);
+//        form.add(label, constraints);
+//        constraints.setColumn(0);
+//        constraints.setRow(1);
+//
+//        JBList<String> component = new JBList<>();
+//        try {
+//            component = getProjectList();
+//        } catch (SQLException throwables) {
+//            // TODO: 09.05.2020 Notification
+//        }
+//        component.addListSelectionListener(new ListSelectionListener() {
+//            @Override
+//            public void valueChanged(ListSelectionEvent e) {
+//                int selected = ((JBList<?>) e.getSource()).getSelectedIndex();
+//                PluginManagerService.getInstance().setTrackingProject(selected);
+//                PluginManagerService.getInstance().setTrackingTask(-1);
+//                PluginManagerService.getInstance().setTrackingMilestone(-1);
+//                GridConstraints constraints = new GridConstraints();
+//                constraints.setRow(1);
+//                constraints.setColumn(1);
+//                JBList<String> component = new JBList<>();
+//                try {
+//                    component = getMilestoneList(selected);
+//                } catch (SQLException throwables) {
+//                    // TODO: 09.05.2020 Notification
+//                }
+//                component.addListSelectionListener(new ListSelectionListener() {
+//                    @Override
+//                    public void valueChanged(ListSelectionEvent e) {
+//                        int selected = ((JBList<?>) e.getSource()).getSelectedIndex();
+//                        PluginManagerService.getInstance().setTrackingMilestone(selected);
+//                        PluginManagerService.getInstance().setTrackingTask(-1);
+//                        GridConstraints constraints = new GridConstraints();
+//                        constraints.setRow(1);
+//                        constraints.setColumn(2);
+//                        list = new JBList<>();
+//                        try {
+//                            list = getTaskList(selected);
+//                        } catch (SQLException throwables) {
+//                            // TODO: 09.05.2020 Notification
+//                        }
+//                        list.addMouseListener(new MouseAdapter() {
+//                            @Override
+//                            public void mouseClicked(MouseEvent e) {
+//                                if (e.getClickCount() == 2) {
+//                                    int selected = ((JBList<?>) e.getSource()).locationToIndex(e.getPoint());
+//                                    showTaskData(tasks.get(selected));
+//                                }
+//                            }
+//                        });
+//                        form.add(list, constraints);
+//                    }
+//                });
+//                component.addMouseListener(new MouseAdapter() {
+//                    @Override
+//                    public void mouseClicked(MouseEvent e) {
+//                        if (e.getClickCount() == 2) {
+//                            int selected = ((JBList<?>) e.getSource()).locationToIndex(e.getPoint());
+//                            showMilestoneData(milestones.get(selected));
+//                        }
+//                    }
+//                });
+//                form.add(component, constraints);
+//            }
+//        });
+//        component.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                if (e.getClickCount() == 2) {
+//                    int selected = ((JBList<?>) e.getSource()).locationToIndex(e.getPoint());
+//                    showProjectData(projects.get(selected));
+//                }
+//            }
+//        });
+//        form.add(component, constraints);
+//        constraints.setColumn(0);
+//        constraints.setRow(0);
+//
+//        JBPanel buttons = new JBPanel(new GridLayoutManager(1, 2,
+//                JBUI.insets(10, 10), 0, 0));
+//        JButton createButton = new JButton("Track");
+//        JButton cancelButton = new JButton("Cancel");
+//        cancelButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                showData.dispose();
+//            }
+//        });
+//        createButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    if (PluginManagerService.getInstance().getTrackingTask() == -1)
+//                        return;
+//                    int onTrack = tasks.get(list.getSelectedIndex()).getId();
+//                    PluginManagerService.getInstance().setTrackingTask(onTrack);
+//                    LocalTime tracked = TimeManager.getInstance().stopTracking();
+//                    int trackedId = TimeManager.getInstance().getTaskId();
+//                    TimeManager.getInstance().trackKeyPoint(onTrack);
+//                    showData.dispose();
+//                    if (trackedId == -1) {
+//                        AddDataFormBuilder.addKeyPointByUser(tracked, trackedId);
+//                    }
+//                } catch (SQLException throwables) {
+//                    // TODO: 08.05.2020 Show notification about exception
+//                }
+//            }
+//        });
+//        buttons.add(createButton, constraints);
+//        constraints.setColumn(1);
+//        buttons.add(cancelButton, constraints);
+//        constraints.setColumn(2);
+//        constraints.setRow(2);
+//        form.add(buttons, constraints);
+//        showData.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+//        showData.setContentPane(form);
+//        showData.pack();
+//        showData.setVisible(true);
+//    }
 
     public static synchronized void showProjects() {
         JFrame showData = new JFrame("Choose project to track");
@@ -338,6 +338,7 @@ public class ShowDataFormBuilder {
             }
         });
         form.add(component, constraints);
+        list = component;
         constraints.setRow(2);
         JButton track = new JButton("Track");
         track.addActionListener(new ActionListener() {
@@ -348,8 +349,8 @@ public class ShowDataFormBuilder {
                         return;
                     int onTrack = tasks.get(list.getSelectedIndex()).getId();
                     PluginManagerService.getInstance().setTrackingTask(onTrack);
-                    LocalTime tracked = TimeManager.getInstance().stopTracking();
                     int trackedId = TimeManager.getInstance().getTaskId();
+                    LocalTime tracked = TimeManager.getInstance().stopTracking();
                     TimeManager.getInstance().trackKeyPoint(onTrack);
                     showData.dispose();
                     if (trackedId != -1) {
