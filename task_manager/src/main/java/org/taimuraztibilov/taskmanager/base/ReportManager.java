@@ -38,19 +38,19 @@ public final class ReportManager {
                     LocalTime.now().getSecond() + ".csv";
             new File(path).createNewFile();
             CSVWriter writer = new CSVWriter(new FileWriter(path));
-            writer.writeNext(new String[]{"Отчет по проекту с " + from.toString() + " по " + to.toString()});
+            writer.writeNext(new String[]{"Отчет по проекту с " + from.toString() + " по " + to.toString(), "", "", "", ""});
             writer.writeNext(new String[]{
-                    "Наименование проекта: ", DataBaseManager.getInstance().getProject(projectId).getTitle()
+                    "Наименование проекта: ", DataBaseManager.getInstance().getProject(projectId).getTitle(), "", "", ""
             });
             writer.writeNext(new String[]{
-                    "Разработчик: ", developerName
+                    "Разработчик: ", developerName, "", "", ""
             });
             writer.writeNext(new String[]{
-                    "Организация: ", organisation
+                    "Организация: ", organisation, "", "", ""
             });
-            writer.writeNext(new String[]{});
+            writer.writeNext(new String[]{"", "", "", "", ""});
             writer.writeNext(new String[]{
-                    "Этап", "Задача", "Дата", "Комментарий", "Затраченное время"
+                    "Веха", "Задача", "Дата", "Комментарий", "Затраченное время"
             });
             ResultSet data = DataBaseManager.getInstance().getReportData(from, to, projectId);
             while (data.next())
