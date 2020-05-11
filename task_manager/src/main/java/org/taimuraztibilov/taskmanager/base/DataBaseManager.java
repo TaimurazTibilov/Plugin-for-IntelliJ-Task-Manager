@@ -19,7 +19,7 @@ public final class DataBaseManager implements DataEditor {
     private Connection connection;
 
     private DataBaseManager() throws SQLException {
-        this.connectionPath = "taskmanagerbase.sqlite";
+        this.connectionPath = "taskmanagerdb.sqlite"; // this.connectionPath = "taskmanagerbase.sqlite";
         DriverManager.registerDriver(new JDBC());
         this.connection = DriverManager.getConnection("jdbc:sqlite:" + this.connectionPath);
         connection.createStatement().executeUpdate("pragma foreign_keys = on");
