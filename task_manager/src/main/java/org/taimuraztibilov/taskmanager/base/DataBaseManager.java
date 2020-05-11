@@ -62,7 +62,7 @@ public final class DataBaseManager implements DataEditor {
 
     public static synchronized DataBaseManager getInstance() throws SQLException {
         if (instance == null)
-            instance = new DataBaseManager("taskmanagerbase.sqlite");
+            instance = new DataBaseManager("taskmanagerdb.sqlite");
         return instance;
     }
 
