@@ -1,9 +1,6 @@
 package org.taimuraztibilov.taskmanager.base;
 
 import com.intellij.openapi.components.Service;
-import com.intellij.openapi.externalSystem.autoimport.AutoImportProjectTracker;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.rt.coverage.data.ProjectData;
 
 @Service
 public final class PluginManagerService {

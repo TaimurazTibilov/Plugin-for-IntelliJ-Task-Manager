@@ -1,6 +1,5 @@
 package org.taimuraztibilov.taskmanager.ui;
 
-import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.components.*;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
